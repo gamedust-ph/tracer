@@ -157,8 +157,6 @@ const Transaction = () => {
     // ? not submit anything
     if (!addressSendToUser || !addressToOwner || !amountToUser || !amountToOwner) return
 
-    console.log(formData);
-
     const transactionHash = await sendMultiTransaction()
 
     if (transactionHash !== '') {
@@ -210,7 +208,7 @@ const Transaction = () => {
             <input
               type="number"
               name="amountToOwner"
-              step="0.00000000000001"
+              step="0.0000001"
               value={formData.amountToOwner}
               onChange={(e) => changeHandler(e)}
               className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-sm lg:text-base border-gray-300 rounded-md my-4 disabled:bg-gray-200"
@@ -222,7 +220,7 @@ const Transaction = () => {
             <input
               type="number"
               name="amountToUser"
-              step="0.00000001"
+              step="0.0000001"
               value={amountToUser}
               onChange={(e) => onAmountChange(e)}
               className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-sm lg:text-base border-gray-300 rounded-md my-4 disabled:bg-gray-200"
