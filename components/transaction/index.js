@@ -7,6 +7,8 @@ import { TransactionContext } from '../../stores/context/transaction/context'
 import Loader from '../modal/Loader'
 import { mainnets, testnets } from '../../utils/constants'
 import Steps from '../steps'
+import { RefreshIcon } from '@heroicons/react/outline'
+import { CheckIcon } from '@heroicons/react/solid'
 
 const ButtonIcon = ({ crypto }) => {
   if (crypto === '') crypto = 'unknown'
@@ -32,7 +34,7 @@ const Transaction = () => {
 
   const [transactHash, setTransactHash] = useState('')
   const [amountToUser, setAmountToUser] = useState(formData.amountToUser)
-  const [step, setStep] = useState(1)
+  const [step, setStep] = useState(3)
 
   useEffect(() => {
     const chainId = window.ethereum.networkVersion
@@ -189,12 +191,46 @@ const Transaction = () => {
     }
   }
 
+  const retryAgainHandler = () => {
+    setStep(1)
+  }
+
   return (
     <Paper elevation={1} className={classes.disclosure}>
       <Loader transactionHash={transactHash} onEmptyTransactHash={emptyTransactionHashHandler} />
       <Steps currentStep={step} />
       <div className="">
-        {step !== 3 && (
+        {step === 3 ? (
+          <div className="flex items-end sm:items-center justify-center min-h-full p-4 text-center sm:p-0">
+            <div className="relative bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden transform transition-all sm:my-8 sm:max-w-lg sm:w-full sm:p-6">
+              <div className="sm:flex sm:items-start">
+                <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+                  <CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true" />
+                </div>
+                <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                  <h1 className="text-lg leading-6 font-medium text-gray-900">
+                    Payment Successful
+                  </h1>
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-500">
+                      Do you want to make another transaction?
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-5 sm:mt-4 sm:ml-10 sm:pl-4 sm:flex">
+                <button
+                  type="button"
+                  className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:w-auto sm:text-sm"
+                  onClick={() => retryAgainHandler()}
+                >
+                  <RefreshIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+                  Try Again
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
           <form onSubmit={submitHandler}>
             <input
               type="text"

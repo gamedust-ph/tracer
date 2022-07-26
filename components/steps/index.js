@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 const steps = [
   { id: 1, name: 'Pre-send', status: 'complete' },
   { id: 2, name: 'Full Send', status: 'current' },
-  { id: 3, name: 'Preview', status: 'upcoming' },
+  { id: 3, name: 'Done', status: 'upcoming' },
 ]
 
 const Steps = ({ currentStep }) => {
@@ -15,19 +15,19 @@ const Steps = ({ currentStep }) => {
       setAllSteps([
         { id: 1, name: 'Pre-send', status: 'current' },
         { id: 2, name: 'Full Send', status: 'upcoming' },
-        { id: 3, name: 'Preview', status: 'upcoming' },
+        { id: 3, name: 'Done', status: 'upcoming' },
       ])
     } else if (currentStep === 2) {
       setAllSteps([
         { id: 1, name: 'Pre-send', status: 'complete' },
         { id: 2, name: 'Full Send', status: 'current' },
-        { id: 3, name: 'Preview', status: 'upcoming' },
+        { id: 3, name: 'Done', status: 'upcoming' },
       ])
     } else if (currentStep === 3) {
       setAllSteps([
         { id: 1, name: 'Pre-send', status: 'complete' },
         { id: 2, name: 'Full Send', status: 'complete' },
-        { id: 3, name: 'Preview', status: 'complete' },
+        { id: 3, name: 'Done', status: 'complete' },
       ])
     }
   }, [currentStep])
@@ -40,7 +40,7 @@ const Steps = ({ currentStep }) => {
             {step.status === 'complete' ? (
               <p className="group flex items-center w-full">
                 <span className="px-6 py-4 flex items-center text-sm font-medium">
-                  <span className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-indigo-600 rounded-full">
+                  <span className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-blue-600 rounded-full">
                     <CheckIcon className="w-6 h-6 text-white" aria-hidden="true" />
                   </span>
                   <span className="ml-4 text-sm font-medium text-gray-900">{step.name}</span>
@@ -48,10 +48,10 @@ const Steps = ({ currentStep }) => {
               </p>
             ) : step.status === 'current' ? (
               <p className="px-6 py-4 flex items-center text-sm font-medium" aria-current="step">
-                <span className="flex-shrink-0 w-10 h-10 flex items-center justify-center border-2 border-indigo-600 rounded-full">
-                  <span className="text-indigo-600">{step.id}</span>
+                <span className="flex-shrink-0 w-10 h-10 flex items-center justify-center border-2 border-blue-600 rounded-full">
+                  <span className="text-blue-600">{step.id}</span>
                 </span>
-                <span className="ml-4 text-sm font-medium text-indigo-600">{step.name}</span>
+                <span className="ml-4 text-sm font-medium text-blue-600">{step.name}</span>
               </p>
             ) : (
               <p className="group flex items-center">
