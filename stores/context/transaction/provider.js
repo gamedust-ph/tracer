@@ -61,7 +61,7 @@ export const TransactionProvider = ({ children }) => {
       contract = contractAddress_binance_mainnet
     }
 
-    console.log(contract);
+    console.log(`using contract ${contract} on network ${state.chain}`);
 
     const provider = new ethers.providers.Web3Provider(ethereum)
     const signer = provider.getSigner()
@@ -122,6 +122,7 @@ export const TransactionProvider = ({ children }) => {
 
       dispatch({ type: 'SET_LOADING', payload: { isLoading: true } })
 
+      // * Contract
       const contract = getEthereumContract()
 
       // ? Get the data from the form
@@ -147,31 +148,79 @@ export const TransactionProvider = ({ children }) => {
         return amount._hex
       })
 
+      // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Charge To Contract
+      const chargeAmount = await chargeContract(contract, totalAmount)
+
+      if (chargeAmount.message === 'failed') {
+        throw new Error(chargeAmount.error.code)
+      } else {
+        // * The Charge method is successful and received the hash
+        console.log(`Charge Txcs: ${chargeAmount}`);
+        dispatch({ type: 'SET_LOADING', payload: { isLoading: false } })
+      }
+      // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of Charge to Contract
+
+
+
+      // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Transfer amount to each address
+      dispatch({ type: 'SET_VERIFYING', payload: { isVerifying: true } })
+
+      const transactHash = await transferAddresses(contract, addresses, etherAmounts)
+
+      if (transactHash.message === 'failed') {
+        throw new Error(transactHash.error.code)
+      } else {
+        // * Transferring amounts to the addresses has been successful
+        // * and returning the hash
+        console.log(`Transferred Hash: ${transactHash}`);
+        dispatch({ type: 'SET_VERIFYING', payload: { isVerifying: false } })
+        return { status: 'success', hash: transactHash }
+      }
+      // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of Transfer amount to each address
+    } catch (error) {
+      dispatch({ type: 'SET_LOADING', payload: { isLoading: false } })
+      dispatch({ type: 'SET_VERIFYING', payload: { isVerifying: false } })
+      dispatch(
+        {
+          type: 'SET_ERROR',
+          payload: {
+            isError: true,
+            errorCode: error.message,
+          }
+        }
+      )
+      return { status: 'failed' }
+    }
+  }
+
+  const chargeContract = async (contract, amount) => {
+    try {
       // ? Get the total Amount and parse into ethers
-      const topUpAmount = ethers.utils.parseEther(totalAmount.toString())
+      const topUpAmount = ethers.utils.parseEther(amount.toString())
 
       // ? Charge the smart contract with the given total Amount
       const options = { value: topUpAmount }
       const topUP = await contract.charge(options)
 
       await topUP.wait()
-      dispatch({ type: 'SET_LOADING', payload: { isLoading: false } })
 
-      dispatch({ type: 'SET_VERIFYING', payload: { isVerifying: true } })
-      // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      const transactionHash = await contract.withdrawals(addresses, etherAmounts)
+      return topUP.hash
+    } catch (error) {
+      return { message: 'failed', error }
+    }
+  }
+
+  const transferAddresses = async (contract, addresses, amounts) => {
+    try {
+      const transactionHash = await contract.withdrawals(addresses, amounts)
       console.log(`Loading: ${transactionHash.hash}`);
 
       await transactionHash.wait()
-      dispatch({ type: 'SET_VERIFYING', payload: { isVerifying: false } })
-
       console.log(`Success: ${transactionHash.hash}`);
-      
+
       return transactionHash.hash
     } catch (error) {
-      console.error(error);
-
-      throw new Error('No Ethereum Object')
+      return { message: 'failed', error }
     }
   }
 
@@ -239,15 +288,15 @@ export const TransactionProvider = ({ children }) => {
   const changeChainNetwork = chain => {
     if (chain === 'eth' || chain === 'ropsten') {
       setFormData(currState => (
-        {...currState, amountToOwner: '0.0000317'}
+        { ...currState, amountToOwner: '0.0000317' }
       ))
     } else if (chain === 'binance') {
       setFormData(currState => (
-        {...currState, amountToOwner: '0.0001887'}
+        { ...currState, amountToOwner: '0.0001887' }
       ))
     } else if (chain === 'polygon') {
       setFormData(currState => (
-        {...currState, amountToOwner: '0.0552455'}
+        { ...currState, amountToOwner: '0.0552455' }
       ))
     }
 
@@ -276,6 +325,8 @@ export const TransactionProvider = ({ children }) => {
     sendMultiTransaction,
     isLoading: state.isLoading,
     isVerifying: state.isVerifying,
+    isError: state.isError,
+    errorCode: state.errorCode,
     chain: state.chain,
     // ! Form Handling
     formData,

@@ -35,5 +35,7 @@ export const TransactionContext = createContext({
   sendTransaction: () => {},
   isLoading: false,
   isVerifying: false,
+  isError: false,
+  errorCode: '',
   chain: ''
 })

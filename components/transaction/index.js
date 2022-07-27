@@ -34,7 +34,7 @@ const Transaction = () => {
 
   const [transactHash, setTransactHash] = useState('')
   const [amountToUser, setAmountToUser] = useState(formData.amountToUser)
-  const [step, setStep] = useState(3)
+  const [step, setStep] = useState(1)
 
   useEffect(() => {
     const chainId = window.ethereum.networkVersion
@@ -161,7 +161,9 @@ const Transaction = () => {
 
     const transactionHash = await sendMultiTransaction()
 
-    if (transactionHash !== '') {
+    console.log(transactionHash);
+
+    if (transactionHash.status === 'success') {
       setStep(currState => currState + 1)
       setAmountToUser('')
 

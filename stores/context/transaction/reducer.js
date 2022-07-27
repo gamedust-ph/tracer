@@ -2,7 +2,9 @@ export const defaultNetworkState = {
   network: '',
   chain: '', // ! default chain is ropsten for development
   isLoading: false,
-  isVerifying: false
+  isVerifying: false,
+  isError: false,
+  errorCode: '',
 }
 
 const NetworkReducer = (state, action) => {
@@ -36,6 +38,14 @@ const NetworkReducer = (state, action) => {
         ...state,
         isVerifying: action.payload.isVerifying
       }
+
+    case "SET_ERROR": {
+      return {
+        ...state,
+        isError: action.payload.isError,
+        errorCode: action.payload.errorCode,
+      }
+    }
 
     default:
       return {
