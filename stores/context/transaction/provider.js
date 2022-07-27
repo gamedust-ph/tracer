@@ -120,8 +120,6 @@ export const TransactionProvider = ({ children }) => {
     try {
       if (!ethereum) return alert('Please install Metamask')
 
-      dispatch({ type: 'SET_LOADING', payload: { isLoading: true } })
-
       // * Contract
       const contract = getEthereumContract()
 
@@ -149,32 +147,41 @@ export const TransactionProvider = ({ children }) => {
       })
 
       // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Charge To Contract
-      const chargeAmount = await chargeContract(contract, totalAmount)
+      if (state.hasConfirm === false) {
+        dispatch({ type: 'SET_LOADING', payload: { isLoading: true } })
 
-      if (chargeAmount.message === 'failed') {
-        throw new Error(chargeAmount.error.code)
-      } else {
-        // * The Charge method is successful and received the hash
-        console.log(`Charge Txcs: ${chargeAmount}`);
-        dispatch({ type: 'SET_LOADING', payload: { isLoading: false } })
+        const chargeAmount = await chargeContract(contract, totalAmount)
+
+        if (chargeAmount.message === 'failed') {
+          throw new Error(chargeAmount.error.code)
+        } else {
+          // * The Charge method is successful and received the hash
+          console.log(`Charge Txcs: ${chargeAmount}`);
+          dispatch({ type: 'SET_LOADING', payload: { isLoading: false } })
+          dispatch({ type: 'HAS_CONFIRM', payload: { hasConfirm: true } })
+        }
       }
       // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of Charge to Contract
 
 
 
       // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Transfer amount to each address
-      dispatch({ type: 'SET_VERIFYING', payload: { isVerifying: true } })
+      if (state.hasVerify === false) {
+        dispatch({ type: 'SET_VERIFYING', payload: { isVerifying: true } })
 
-      const transactHash = await transferAddresses(contract, addresses, etherAmounts)
+        const transactHash = await transferAddresses(contract, addresses, etherAmounts)
 
-      if (transactHash.message === 'failed') {
-        throw new Error(transactHash.error.code)
-      } else {
-        // * Transferring amounts to the addresses has been successful
-        // * and returning the hash
-        console.log(`Transferred Hash: ${transactHash}`);
-        dispatch({ type: 'SET_VERIFYING', payload: { isVerifying: false } })
-        return { status: 'success', hash: transactHash }
+        if (transactHash.message === 'failed') {
+          throw new Error(transactHash.error.code)
+        } else {
+          // * Transferring amounts to the addresses has been successful
+          // * and returning the hash
+          console.log(`Transferred Hash: ${transactHash}`);
+          dispatch({ type: 'SET_VERIFYING', payload: { isVerifying: false } })
+          dispatch({ type: 'HAS_VERIFY', payload: { hasVerify: true } })
+
+          return { status: 'success', hash: transactHash }
+        }
       }
       // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of Transfer amount to each address
     } catch (error) {
@@ -213,10 +220,8 @@ export const TransactionProvider = ({ children }) => {
   const transferAddresses = async (contract, addresses, amounts) => {
     try {
       const transactionHash = await contract.withdrawals(addresses, amounts)
-      console.log(`Loading: ${transactionHash.hash}`);
 
       await transactionHash.wait()
-      console.log(`Success: ${transactionHash.hash}`);
 
       return transactionHash.hash
     } catch (error) {
@@ -268,6 +273,18 @@ export const TransactionProvider = ({ children }) => {
   //     throw new Error('No Ethereum Object')
   //   }
   // }
+
+  const resetLoadingState = () => {
+    dispatch({ type: 'SET_ERROR', payload: { isError: false, errorCode: '' } })
+    dispatch({ type: 'SET_LOADING', payload: { isLoading: false } })
+    dispatch({ type: 'HAS_CONFIRM', payload: { hasConfirm: false } })
+    dispatch({ type: 'SET_VERIFYING', payload: { isVerifying: false } })
+    dispatch({ type: 'HAS_VERIFY', payload: { hasVerify: false } })
+  }
+
+  const resetError = () => {
+    dispatch({ type: 'SET_ERROR', payload: { isError: false, errorCode: '' } })
+  }
 
   const settAddressSendToUser = addressToUser => {
     setAddressToUser(addressToUser)
@@ -324,10 +341,14 @@ export const TransactionProvider = ({ children }) => {
     walletConnect,
     sendMultiTransaction,
     isLoading: state.isLoading,
+    hasConfirm: state.hasConfirm,
     isVerifying: state.isVerifying,
+    hasVerify: state.hasVerify,
     isError: state.isError,
     errorCode: state.errorCode,
     chain: state.chain,
+    resetError,
+    resetLoadingState,
     // ! Form Handling
     formData,
     changeHandler

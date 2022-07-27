@@ -6,7 +6,16 @@ import { TransactionContext } from '../../stores/context/transaction/context'
 
 const Loader = ({ transactionHash, onEmptyTransactHash }) => {
   const transactionCtx = useContext(TransactionContext)
-  const { isLoading, isVerifying, isError, errorCode } = transactionCtx
+  const {
+    isLoading,
+    hasConfirm,
+    isVerifying,
+    hasVerify,
+    isError,
+    errorCode,
+    resetError,
+    resetLoadingState
+  } = transactionCtx
 
   const [open, setOpen] = useState(false)
 
@@ -24,6 +33,10 @@ const Loader = ({ transactionHash, onEmptyTransactHash }) => {
 
   const closeHandler = () => {
     onEmptyTransactHash()
+
+    if (hasConfirm && hasVerify) resetLoadingState()
+    else resetError()
+    
     setOpen(false)
   }
 
@@ -88,7 +101,7 @@ const Loader = ({ transactionHash, onEmptyTransactHash }) => {
                   </div>
                 )}
 
-                {isLoading === false && isVerifying === false && isError === false && (
+                {hasConfirm === true && hasVerify === true && isError === false && (
                   <Fragment>
                     <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
                       <button

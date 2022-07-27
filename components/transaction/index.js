@@ -29,7 +29,9 @@ const Transaction = () => {
     addressSendToUser,
     network,
     changeChainNetwork,
-    chain
+    chain,
+    hasConfirm,
+    hasVerify
   } = transactionCtx
 
   const [transactHash, setTransactHash] = useState('')
@@ -333,18 +335,34 @@ const Transaction = () => {
               {network === 'testnet' ? 'Avalanche Testnet' : 'Avalanche'}
             </Button> */}
 
-            <div className="mt-4 flex justify-center">
-              <Button
-                variant="contained"
-                size='medium'
-                color="primary"
-                type="submit"
-                className='mt-4 h-12'
-              >
-                {step === 1 && `Pre-Send ${chain}`}
-                {step === 2 && `Send ${chain}`}
-              </Button>
-            </div>
+            {!hasConfirm && (
+              <div className="mt-4 flex justify-center">
+                <Button
+                  variant="contained"
+                  size='medium'
+                  color="primary"
+                  type="submit"
+                  className='mt-4 h-12'
+                >
+                  {step === 1 && `Pre-Send ${chain}`}
+                  {step === 2 && `Send ${chain}`}
+                </Button>
+              </div>
+            )}
+
+            {hasConfirm && !hasVerify && (
+              <div className="mt-4 flex justify-center">
+                <Button
+                  variant="contained"
+                  size='medium'
+                  color="primary"
+                  type="submit"
+                  className='mt-4 h-12'
+                >
+                  Verify
+                </Button>
+              </div>
+            )}
           </form>
         )}
       </div>
