@@ -44,9 +44,9 @@
   grid-column: 1 / -1;
 }
 
-/* .label {
+.label {
   white-space: nowrap;
-} */
+}
 
 .accountIcon {
   width: 30px;
@@ -94,7 +94,7 @@
   width: 100%;
 }
 
-.searchInputAdnornment {
+.searchInputAdornment {
   font-size: 14px !important;
   font-weight: bold !important;
 }

@@ -243,6 +243,7 @@ const Transaction = () => {
               className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-sm lg:text-base border-gray-300 rounded-md disabled:bg-gray-200"
               placeholder="Enter wallet address to send"
               required
+              disabled={hasConfirm}
             />
 
             <input
@@ -265,6 +266,7 @@ const Transaction = () => {
               onChange={(e) => onAmountChange(e)}
               className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-sm lg:text-base border-gray-300 rounded-md my-4 disabled:bg-gray-200"
               placeholder="Enter amount to send"
+              disabled={hasConfirm}
             />
 
             <div className="flex justify-evenly">

@@ -156,7 +156,13 @@ function Header(props) {
   );
 
   const transactionCtx = useContext(TransactionContext)
-  const { walletConnect, settAddressSendToUser, changeTestnetNetwork, changeMainnetNetwork } = transactionCtx
+  const {
+    walletConnect,
+    settAddressSendToUser,
+    changeTestnetNetwork,
+    changeMainnetNetwork,
+    hasConfirm
+  } = transactionCtx
 
   useEffect(() => {
     const accountConfigure = () => {
@@ -264,11 +270,9 @@ function Header(props) {
               className={classes.searchContainer}
               variant="outlined"
               id="tracer_send_to_user"
-              // placeholder="Coinbase, Kraken, ..."
+              placeholder={formatAddress('0x9b5E65f79dC4e7b8025031Df7e8B433379EE2A51')}
               value={searchTerm}
-              placeholder={
-                'Enter a wallet address to send'
-              }
+              disabled={hasConfirm}
               onChange={(e) => setSearchTerm(e.target.value)}
               InputProps={{
                 endAdornment: (
@@ -278,9 +282,9 @@ function Header(props) {
                 ),
                 startAdornment: (
                   <InputAdornment position="start">
-                    <Typography className={classes.searchInputAdnornment}>
+                    <Typography className={classes.searchInputAdornment}>
                       {/* {t("search-networks")} */}
-                      {/* Search Exchange */}
+                      Search Wallet Address
                     </Typography>
                   </InputAdornment>
                 ),
