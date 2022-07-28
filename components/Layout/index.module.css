@@ -1,13 +1,15 @@
 .container {
   display: grid;
-  grid-template-columns: 700px calc(100vw - 717px);
+  grid-template-columns: 715px;
+  /* grid-template-columns: 700px calc(100vw - 717px); */
   position: relative;
   box-sizing: border-box;
 }
 
 .containerDark {
   display: grid;
-  grid-template-columns: 700px calc(100vw - 717px);
+  grid-template-columns: 715px;
+  /* grid-template-columns: 700px calc(100vw - 717px); */
   position: relative;
   box-sizing: border-box;
   background: #2b2e3c;

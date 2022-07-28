@@ -22,12 +22,12 @@ export default function Layout({ changeTheme, theme, children }) {
               : classes.container
           }
         >
-          <div className={classes.copyContainer}>
+          {/* <div className={classes.copyContainer}>
             <div className={classes.copyCentered}>
-              {/* <img style={{
+              <img style={{
                 width: '360px',
                 marginLeft: '-15px',
-              }} src={url} alt="Chainlist logo" /> */}
+              }} src={url} alt="Chainlist logo" />
               <div className={`p-3 mx-auto rounded-xl h-40 lg:h-52 w-72 sm:w-full my-5 ${classes['white-glassmorphism']} ${classes['eth-card']}`}>
                 <div className="flex justify-between flex-col w-full h-full">
                   <div className="flex justify-between items-start">
@@ -39,35 +39,29 @@ export default function Layout({ changeTheme, theme, children }) {
                   <div>
                     <div className="flex justify-between">
                       <p className="text-white font-light text-lg">
-                        {/* {shortenAddress('0xD8C42316e2bAFa294C25fc8852dD4935a18511B4')} */}
                         {account && shortenAddress(account)}
                       </p>
                       <p className="text-white font-semibold text-sm">
-                        {/* 0.00 ETH */}
+                        0.00 ETH
                       </p>
                     </div>
                     <div className="flex justify-between">
                       <p className="text-white font-semibold text-lg mt-1">
                         Ethereum
                       </p>
-                      {/* <p className="text-white font-semibold text-lg mt-1">
-                        Ethereum
-                      </p> */}
                     </div>
                   </div>
                 </div>
               </div>
 
               <h2 className="my-10 font-bold text-2xl">
-                {/* {t("help-info")} */}
                 Tracer
               </h2>
               <p className="leading-relaxed text-lg font-medium mx-5 lg:mx-0">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores sint delectus molestiae, sequi corporis minima odio harum a laborum? Perferendis, tenetur illo provident sequi error quam sed iste debitis nam? Voluptatx.
-                {/* {t("description")} */}
               </p>
             </div>
-          </div>
+          </div> */}
           <div
             className={
               theme.palette.type === "dark"
