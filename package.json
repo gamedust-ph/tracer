@@ -23,6 +23,7 @@
     "fathom-client": "^3.5.0",
     "flux": "^4.0.3",
     "kraken-api": "^1.0.1",
+    "multicoin-address-validator": "^0.5.10",
     "next": "^12.2.2",
     "next-i18next": "^11.2.2",
     "node-binance-api": "^0.13.1",
