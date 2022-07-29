@@ -27,6 +27,24 @@ export const TransactionProvider = ({ children }) => {
     checkIfWalletIsConnected()
   }, [])
 
+  // ? Validate wallet address every time user inputs
+  useEffect(() => {
+    if (addressToUser !== null) {
+      const validateAddress = async () => {
+        try {
+          const res = await fetch(`/api/validate/${addressToUser}`)
+          const data = await res.json()
+
+          console.log(data);
+        } catch (error) {
+          alert(error)
+        }
+      }
+
+      validateAddress()
+    }
+  }, [addressToUser])
+
   // * Form Data
   const [formData, setFormData] = useState({
     addressSendToUser: '',

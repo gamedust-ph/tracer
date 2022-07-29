@@ -74,11 +74,6 @@ function Home({ changeTheme, theme, sortedChains, cryptoExchanges }) {
     network,
   } = transactionCtx
 
-  useEffect(() => {
-    console.log(network);
-    console.log(chain);
-  }, [chain, network])
-
   return (
     <>
       <Head>
