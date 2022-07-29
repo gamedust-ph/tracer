@@ -15,8 +15,9 @@ import {
 } from '../../../utils/constants'
 
 export const TransactionProvider = ({ children }) => {
-  const [currentAccount, setCurrentAccount] = useState(null)
-  const [addressToUser, setAddressToUser] = useState(null)
+  const [currentAccount, setCurrentAccount] = useState('')
+  const [addressToUser, setAddressToUser] = useState('')
+  const [currencyTags, setCurrencyTags] = useState('')
   // const [transactionCount, setTransactionCount] = useState(0) // TODO localStorage.getItem('transactionCount')
 
   const [state, dispatch] = useReducer(NetworkReducer, defaultNetworkState)
@@ -29,19 +30,26 @@ export const TransactionProvider = ({ children }) => {
 
   // ? Validate wallet address every time user inputs
   useEffect(() => {
-    if (addressToUser !== null) {
+    if (addressToUser !== '') {
       const validateAddress = async () => {
         try {
           const res = await fetch(`/api/validate/${addressToUser}`)
-          const data = await res.json()
 
-          console.log(data);
+          if (res.ok) {
+            const data = await res.json()
+            setCurrencyTags(data.wallet)
+            return
+          }
+
+          setCurrencyTags(res.status)
         } catch (error) {
-          alert(error)
+          console.error(error.message);
         }
       }
 
       validateAddress()
+    } else if (addressToUser === '') {
+      setCurrencyTags('')
     }
   }, [addressToUser])
 
@@ -365,6 +373,7 @@ export const TransactionProvider = ({ children }) => {
     isError: state.isError,
     errorCode: state.errorCode,
     chain: state.chain,
+    currencyTags,
     resetError,
     resetLoadingState,
     // ! Form Handling

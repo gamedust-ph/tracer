@@ -161,7 +161,8 @@ function Header(props) {
     settAddressSendToUser,
     changeTestnetNetwork,
     changeMainnetNetwork,
-    hasConfirm
+    hasConfirm,
+    currencyTags,
   } = transactionCtx
 
   useEffect(() => {
@@ -231,6 +232,8 @@ function Header(props) {
     // eslint-disable-next-line
   }, [testnets])
 
+  console.log(currencyTags);
+
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
@@ -240,6 +243,7 @@ function Header(props) {
       settAddressSendToUser(debouncedSearchTerm)
     } else {
       handleSearch("");
+      settAddressSendToUser('')
     }
   }, [debouncedSearchTerm]);
 
@@ -334,6 +338,28 @@ function Header(props) {
           </Typography>
         </Typography>
       </Button>
+
+      <div className={classes.secondRow}>
+        <div className="flex justify-start p-2">
+          {currencyTags && currencyTags.length > 0 &&currencyTags?.map(wallet => (
+            <span className="mr-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800" key={wallet.currency}>
+              <svg className="-ml-0.5 mr-1.5 h-2 w-2 text-indigo-400" fill="currentColor" viewBox="0 0 8 8">
+                <circle cx={4} cy={4} r={3} />
+              </svg>
+              {wallet.currency.toUpperCase()}
+            </span>
+          ))}
+          {currencyTags === 404 && (
+            <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-red-100 text-red-800">
+              <svg className="-ml-1 mr-1.5 h-2 w-2 text-red-400" fill="currentColor" viewBox="0 0 8 8">
+                <circle cx={4} cy={4} r={3} />
+              </svg>
+              Invalid ethereum wallet address
+            </span>
+          )}
+          {currencyTags === '' && ''}
+        </div>
+      </div>
     </div>
   );
 }
