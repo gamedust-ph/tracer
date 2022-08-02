@@ -72,6 +72,7 @@ function Home({ changeTheme, theme, sortedChains, cryptoExchanges }) {
     addressSendToUser,
     chain,
     network,
+    currencyTags,
   } = transactionCtx
 
   return (
@@ -105,7 +106,7 @@ function Home({ changeTheme, theme, sortedChains, cryptoExchanges }) {
           ).map((chain, idx) => {
             return <Chain chain={chain} key={idx} />;
           })} */}
-          {addressSendToUser && <Transaction />}
+          {currencyTags !== 404 && addressSendToUser && <Transaction />}
           {network && chain && (
             <TransactionList
               address={addressSendToUser}
